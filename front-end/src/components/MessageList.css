@@ -1,0 +1,27 @@
+.message-list {
+    padding: 20px;
+    height: 70vh;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .user-message {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .bot-message {
+    align-self: flex-start;
+    background-color: #eaeaea;
+    color: #333;
+  }
+  
