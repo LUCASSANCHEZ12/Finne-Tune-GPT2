@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+python-multipart
+mysql-connector-python
+spacy
+unidecode
+langchain
+langchain_community
+sentence_transformers
+pypdf
