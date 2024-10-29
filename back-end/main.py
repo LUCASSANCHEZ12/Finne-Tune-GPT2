@@ -1,4 +1,4 @@
-from rdf_generator import generate_ttl
+from rdf_generator import generate_rdf
 
 if __name__ == "__main__":
-    generate_ttl()
+    generate_rdf()
