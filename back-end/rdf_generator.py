@@ -24,57 +24,61 @@ def generate_rdf(output_path="output.rdf"):
     knowledge_graph = Graph()
 
     # Define namespaces
-    KG_NS = Namespace("http://example.org/KG/")
+    KG_NS = Namespace("http://www.semanticweb.org/KG#")
     knowledge_graph.bind("knowledge_graph", KG_NS)
     knowledge_graph.bind("rdf", RDF)
     knowledge_graph.bind("owl", OWL)
     knowledge_graph.bind("rdfs", RDFS)
 
-    # Helper function to generate labels for resources
-    def generate_label(row):
-        if len(row) > 1:  
-            return str(row.iloc[1]) 
-        return f"Resource {row.iloc[0]}"
 
     # Get the database schema as a dictionary
     schema = get_database_schema()
     schema_dict = json.loads(schema)
-    print(json.dumps(schema_dict, indent=4))
+    #print(json.dumps(schema_dict, indent=4))
 
     # Add classes and properties to the knowledge graph based on the schema
     for table_name, table_info in schema_dict.items():
         knowledge_graph.add((KG_NS[table_name], RDF.type, OWL.Class))
-        knowledge_graph.add((KG_NS[table_name], RDFS.label, Literal(table_name, datatype=XSD.string)))
 
         for column in table_info['columns']:
+
             column_name = column['COLUMN_NAME']
-            data_type = column['DATA_TYPE']
-            property_uri = KG_NS[column_name]
-            knowledge_graph.add((property_uri, RDF.type, OWL.DatatypeProperty))
-            knowledge_graph.add((property_uri, RDFS.label, Literal(column_name, datatype=XSD.string)))
-            knowledge_graph.add((property_uri, RDFS.range, Literal(data_type, datatype=XSD.string)))
+            data_type = "string" if column['DATA_TYPE'] == "varchar" else column['DATA_TYPE']
+            property_uri = f"{KG_NS[column_name]}_{table_name}"
+
+            knowledge_graph.add((URIRef(property_uri), RDF.type, OWL.DatatypeProperty))
+            knowledge_graph.add((URIRef(property_uri), RDFS.domain, KG_NS[table_name]))
+            knowledge_graph.add((URIRef(property_uri), RDFS.range, XSD[data_type]))
 
     # Add instances to the knowledge graph based on the data in the database
     for table in metadata.tables.keys():
-        print(f"Processing table: {table}")
         df = pd.read_sql_table(table, engine)
         foreign_keys = inspector.get_foreign_keys(table)
-        print(foreign_keys)
 
         # Add properties for foreign keys
         for fk in foreign_keys:
             for constrain in fk['constrained_columns']:
                 ref_table = fk['referred_table']
-                knowledge_graph.add((KG_NS[f"has_{constrain}"], RDF.type, OWL.ObjectProperty))
-                knowledge_graph.add((KG_NS[f"has_{constrain}"], RDFS.domain, KG_NS[table]))
-                knowledge_graph.add((KG_NS[f"has_{constrain}"], RDFS.range, KG_NS[ref_table]))
+                knowledge_graph.add((KG_NS[f"fk_{constrain}"], RDF.type, OWL.ObjectProperty))
+                knowledge_graph.add((KG_NS[f"fk_{constrain}"], RDFS.domain, KG_NS[table]))
+                knowledge_graph.add((KG_NS[f"fk_{constrain}"], RDFS.range, KG_NS[ref_table]))
 
         for _, row in df.iterrows():
-            subject = URIRef(KG_NS[f"{table}/{row.iloc[0]}"])
-            knowledge_graph.add((subject, RDF.type, KG_NS[table]))
+            
+            print(row)
+            subject = KG_NS[f"{table}_{row.iloc[0]}"]
+            pk_row = row.iloc[0]
+            description = row.iloc[1]
 
-            label = generate_label(row)
-            knowledge_graph.add((subject, RDFS.label, Literal(label, datatype=XSD.string)))
+            knowledge_graph.add((subject, RDF.type, OWL.NamedIndividual))
+            knowledge_graph.add((subject, RDF.type, KG_NS[table]))
+            knowledge_graph.add((subject, KG_NS[f"{row.index[1]}_{table}"], Literal(description)))
+            knowledge_graph.add((subject, KG_NS[f"{row.index[0]}_{table}"], Literal(pk_row)))
+            
+            if table == "articulo":
+                knowledge_graph.add((subject, KG_NS[f"fk_{constrain}"], KG_NS[f"ley_{row.iloc[2]}"]))
+
+
 
     # Serialize the knowledge graph to a XML file
     knowledge_graph.serialize(destination=output_path, format="pretty-xml")
