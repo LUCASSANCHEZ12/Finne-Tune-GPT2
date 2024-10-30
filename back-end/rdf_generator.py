@@ -29,6 +29,7 @@ def generate_rdf(output_path="output.rdf"):
     knowledge_graph.bind("rdf", RDF)
     knowledge_graph.bind("owl", OWL)
     knowledge_graph.bind("rdfs", RDFS)
+    knowledge_graph.add((KG_NS[''], RDF.type, OWL.Ontology))
 
 
     # Get the database schema as a dictionary

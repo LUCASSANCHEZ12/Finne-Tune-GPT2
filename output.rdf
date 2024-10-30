@@ -5,14 +5,14 @@
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 >
-  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_articulo">
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Articulo_articulo">
     <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
   </owl:DatatypeProperty>
-  <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#articulo_5136">
+  <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#articulo_5135">
     <rdf:type rdf:resource="http://www.semanticweb.org/KG#articulo"/>
     <knowledge_graph:Descripcion_articulo>Regulación sobre el uso de tecnologías emergentes en el sector privado</knowledge_graph:Descripcion_articulo>
-    <knowledge_graph:Num_Articulo_articulo rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5136</knowledge_graph:Num_Articulo_articulo>
+    <knowledge_graph:Num_Articulo_articulo rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5135</knowledge_graph:Num_Articulo_articulo>
     <knowledge_graph:fk_Num_ley>
       <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#ley_26">
         <rdf:type rdf:resource="http://www.semanticweb.org/KG#ley"/>
@@ -21,37 +21,38 @@
       </owl:NamedIndividual>
     </knowledge_graph:fk_Num_ley>
   </owl:NamedIndividual>
-  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_ley_articulo">
-    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
-  </owl:DatatypeProperty>
-  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Ley_ley">
-    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
-  </owl:DatatypeProperty>
-  <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#articulo_5135">
-    <rdf:type rdf:resource="http://www.semanticweb.org/KG#articulo"/>
-    <knowledge_graph:Descripcion_articulo>Regulación sobre el uso de tecnologías emergentes en el sector privado</knowledge_graph:Descripcion_articulo>
-    <knowledge_graph:Num_Articulo_articulo rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5135</knowledge_graph:Num_Articulo_articulo>
-    <knowledge_graph:fk_Num_ley rdf:resource="http://www.semanticweb.org/KG#ley_26"/>
-  </owl:NamedIndividual>
   <owl:ObjectProperty rdf:about="http://www.semanticweb.org/KG#fk_Num_ley">
     <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
     <rdfs:range rdf:resource="http://www.semanticweb.org/KG#ley"/>
   </owl:ObjectProperty>
-  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Articulo_articulo">
-    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+  <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#ley_1768">
+    <rdf:type rdf:resource="http://www.semanticweb.org/KG#ley"/>
+    <knowledge_graph:Descripcion_ley>CODIGO PENAL BOLIVIA</knowledge_graph:Descripcion_ley>
+    <knowledge_graph:Num_Ley_ley rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1768</knowledge_graph:Num_Ley_ley>
+  </owl:NamedIndividual>
+  <owl:Ontology rdf:about="http://www.semanticweb.org/KG#"/>
+  <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#articulo_5136">
+    <rdf:type rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <knowledge_graph:Descripcion_articulo>Regulación sobre el uso de tecnologías emergentes en el sector privado</knowledge_graph:Descripcion_articulo>
+    <knowledge_graph:Num_Articulo_articulo rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5136</knowledge_graph:Num_Articulo_articulo>
+    <knowledge_graph:fk_Num_ley rdf:resource="http://www.semanticweb.org/KG#ley_26"/>
+  </owl:NamedIndividual>
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Ley_ley">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
   </owl:DatatypeProperty>
   <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_ley">
     <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </owl:DatatypeProperty>
-  <owl:NamedIndividual rdf:about="http://www.semanticweb.org/KG#ley_1768">
-    <rdf:type rdf:resource="http://www.semanticweb.org/KG#ley"/>
-    <knowledge_graph:Descripcion_ley>CODIGO PENAL BOLIVIA</knowledge_graph:Descripcion_ley>
-    <knowledge_graph:Num_Ley_ley rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1768</knowledge_graph:Num_Ley_ley>
-  </owl:NamedIndividual>
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_ley_articulo">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_articulo">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
   <owl:Class rdf:about="http://www.semanticweb.org/KG#ley"/>
   <owl:Class rdf:about="http://www.semanticweb.org/KG#articulo"/>
 </rdf:RDF>
