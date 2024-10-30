@@ -1,5 +1,11 @@
-import React from "react";
+import React from 'react';
 
-export default function Header() {
-  return <div className="header">&nbsp;React Chatbot UI</div>;
-}
+const Header = () => {
+  return (
+    <header className="header">
+      Chatbot UI
+    </header>
+  );
+};
+
+export default Header;

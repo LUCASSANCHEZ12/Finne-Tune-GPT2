@@ -13,10 +13,6 @@ export default function Input({ onSend }) {
     setText("");
   };
 
-  useEffect(() => {
-    document.getElementById("input").disabled = true;
-  }, []);
-
   return (
     <div className="input">
       <form onSubmit={handleSend}>
@@ -26,7 +22,6 @@ export default function Input({ onSend }) {
           value={text}
           id="input"
           placeholder="Enter your message here"
-          disabled
         />
         <button>
           <svg

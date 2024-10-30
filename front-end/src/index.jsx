@@ -39,11 +39,9 @@ function Chatbot() {
 
   return (
     <div className="container">
-      <div className="chatbot">
         <Header />
         <Messages messages={messages} />
         <Input onSend={send} />
-      </div>
     </div>
   );
 }
