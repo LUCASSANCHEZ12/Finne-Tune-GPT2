@@ -64,21 +64,22 @@ def generate_rdf(output_path="output.rdf"):
                 knowledge_graph.add((KG_NS[f"fk_{constrain}"], RDFS.range, KG_NS[ref_table]))
 
         for _, row in df.iterrows():
-            
-            print(row)
+            # Create a subject URI for each row in the table
             subject = KG_NS[f"{table}_{row.iloc[0]}"]
             pk_row = row.iloc[0]
             description = row.iloc[1]
 
+            # Add the subject as an instance of OWL.NamedIndividual and the table class
             knowledge_graph.add((subject, RDF.type, OWL.NamedIndividual))
             knowledge_graph.add((subject, RDF.type, KG_NS[table]))
+
+            # Add properties for the primary key and description
             knowledge_graph.add((subject, KG_NS[f"{row.index[1]}_{table}"], Literal(description)))
             knowledge_graph.add((subject, KG_NS[f"{row.index[0]}_{table}"], Literal(pk_row)))
-            
+
+            # Add foreign key relationships for the "articulo" table
             if table == "articulo":
                 knowledge_graph.add((subject, KG_NS[f"fk_{constrain}"], KG_NS[f"ley_{row.iloc[2]}"]))
-
-
 
     # Serialize the knowledge graph to a XML file
     knowledge_graph.serialize(destination=output_path, format="pretty-xml")
