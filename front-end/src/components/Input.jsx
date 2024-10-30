@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-export default function Input({ onSend }) {
+export default function Input({ onSend, isDisabled}) {
   const [text, setText] = useState("");
 
   const handleInputChange = e => {
     setText(e.target.value);
   };
 
-  const handleSend = e => {
+  const sendPromptToModel = e => {
     e.preventDefault();
     onSend(text);
     setText("");
   };
 
   return (
-    <div className="input">
-      <form onSubmit={handleSend}>
+    <div className="input" id="input">
+      <form onSubmit={sendPromptToModel}>
         <input
           type="text"
           onChange={handleInputChange}
           value={text}
-          id="input"
           placeholder="Enter your message here"
+          disabled={isDisabled}
         />
         <button>
           <svg
