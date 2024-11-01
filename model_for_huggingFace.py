@@ -13,50 +13,101 @@ sparql = SPARQLWrapper(graphdb_url)
 client = InferenceClient(api_key=token_hf)
 
 rdf_schema = """
-Prefixes:
-- kg: <http://www.semanticweb.org/KG#>
-- xsd: <http://www.w3.org/2001/XMLSchema#>
-
-Clases:
-- kg:articulo
-- kg:ley
-
-Propiedades de Datos:
-- kg:Num_Articulo_articulo (dominio: kg:articulo, rango: xsd:int)
-- kg:Num_Ley_articulo (dominio: kg:articulo, rango: xsd:int)
-- kg:Descripcion_articulo (dominio: kg:articulo, rango: xsd:string)
-- kg:Num_Ley_ley (dominio: kg:ley, rango: xsd:int)
-- kg:Descripcion_ley (dominio: kg:ley, rango: xsd:string)
-
-Propiedades de Objeto:
-- kg:fk_Num_ley (dominio: kg:articulo, rango: kg:ley)
+  
+  Propiedades de objeto:
+  
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/KG#fk_Num_ley">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/KG#ley"/>
+    </owl:ObjectProperty>
+  
+  Propiedades de datos:
+  
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Ley_ley">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Articulo_articulo">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+  
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_ley">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+  
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_ley_articulo">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_articulo">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+  
+  Clases:
+  
+  <owl:Class rdf:about="http://www.semanticweb.org/KG#ley"/>
+  
+  <owl:Class rdf:about="http://www.semanticweb.org/KG#articulo"/>
 """
 
-question = "Muestrame la descripcion de todas cada ley"
+example = """
+PREFIX kg: <http://www.semanticweb.org/KG#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?Descripcion_ley
+WHERE {
+    ?ley kg:Num_Ley_ley 26 .
+    ?ley kg:Descripcion_ley ?Descripcion_ley .
+}
+"""
+
+question = "Describe la ley 26 con todos sus articulos"
 
 prompt = f"""
-Eres un experto en SPARQL y RDF, y tu tarea es generar consultas SPARQL precisas.Tomando en cuenta el siguiente esquema RDF:
+Eres un experto en SPARQL y RDF. Tu tarea es generar consultas SPARQL precisas y correctas basadas en el esquema RDF proporcionado. A continuación se muestra el esquema RDF:
 
-    {rdf_schema}
+{rdf_schema}
 
-    Utiliza los siguientes prefijos en la consulta:
+Utiliza los siguientes prefijos en la consulta:
 
-    PREFIX kg: <http://www.semanticweb.org/KG#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX kg: <http://www.semanticweb.org/KG#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    Genera una consulta SPARQL correcta que responda a la siguiente pregunta:
+Es **crucial** que utilices las clases y propiedades **exactamente** como aparecen en el esquema RDF, respetando mayúsculas y minúsculas.
 
-    "{question}"
+Genera **únicamente** la consulta SPARQL correcta que responda a la siguiente pregunta, sin añadir explicaciones ni comentarios adicionales:
 
-    La consulta debe utilizar las clases y propiedades de datos y objetos respetando mayusculas y minusculas definidas en el esquema RDF proporcionado.
+"{question}"
 
-    Proporciona únicamente la consulta SPARQL encerrada entre tres acentos invertidos así:
+La consulta debe:
 
-    \`\`\`sparql
-    [Tu consulta SPARQL aquí]
-    \`\`\`
-    
-Valida tu sparql generado con el esquema RDF y corrige si existen errores.
+- Ser lo mas simple posible sin funciones innecesarias y parametros que no se usan.
+- Utilizar las clases y propiedades de datos y objetos tal como están definidas en el esquema RDF.
+- Respetar mayúsculas y minúsculas.
+- Ser sintácticamente correcta y válida según el esquema RDF proporcionado.
+
+Proporciona únicamente la consulta SPARQL encerrada entre tres acentos invertidos así:
+
+\`\`\`sparql
+[Tu consulta SPARQL aquí]
+\`\`\`
+
+Antes de proporcionar la consulta final, verifica que la misma es correcta y cumple con todos los requisitos.
+
+**Ejemplo de una consulta SPARQL válida:**
+
+Si la pregunta fuera "¿Cuál es la descripción de la ley con número 26?", la consulta SPARQL sería:
+
+\`\`\`sparql
+{example}
+\`\`\`
+
+Ahora, genera la consulta SPARQL que responde a la pregunta proporcionada.
 """
 
 messages = [
@@ -96,7 +147,9 @@ sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
 prompt = f"""
-Eres un experto en procesamiento de datos y tu tarea es transformar resultados de consultas SPARQL en un formato JSON estructurado. Dada la siguiente respuesta de GraphDB:
+Eres un experto en lenguaje natural y tu tarea es interpretar los resultados de consultas SPARQL y proporcionar respuestas verbalizadas en español.
+
+Dada la siguiente respuesta de GraphDB:
 
 {results}
 
@@ -104,17 +157,18 @@ Y considerando la consulta SPARQL utilizada:
 
 {sparql_query}
 
-Extrae **únicamente** los datos obtenidos y genera un JSON que contenga los valores de las variables retornadas por la consulta.
+Genera una respuesta en lenguaje natural que comunique claramente la información obtenida, respondiendo a la pregunta original:
 
-El JSON debe tener el siguiente formato:
+"{question}"
 
-[
-  {{ "variable1": valor1, "variable2": valor2, ... }},
-  {{ "variable1": valor3, "variable2": valor4, ... }},
-  ...
-]
+La respuesta debe:
 
-No incluyas explicaciones ni comentarios; proporciona **únicamente** el JSON con los datos extraídos.
+- Ser clara y concisa.
+- Incluir los datos relevantes obtenidos de la consulta.
+- Estar redactada en español correcto.
+- No incluir información técnica ni detalles de la consulta.
+
+No incluyas explicaciones adicionales ni comentarios técnicos; proporciona **únicamente** la respuesta verbalizada al usuario.
 """
 
 messages = [
