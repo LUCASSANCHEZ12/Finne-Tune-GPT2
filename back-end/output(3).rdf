@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:knowledge_graph="http://www.semanticweb.org/KG#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Articulo_articulo">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  
+  <owl:ObjectProperty rdf:about="http://www.semanticweb.org/KG#fk_Num_ley">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <rdfs:range rdf:resource="http://www.semanticweb.org/KG#ley"/>
+  </owl:ObjectProperty>
+  
+  <owl:Ontology rdf:about="http://www.semanticweb.org/KG#"/>
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_Ley_ley">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_ley">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#ley"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Num_ley_articulo">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+  </owl:DatatypeProperty>
+  
+  <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/KG#Descripcion_articulo">
+    <rdfs:domain rdf:resource="http://www.semanticweb.org/KG#articulo"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  
+  <owl:Class rdf:about="http://www.semanticweb.org/KG#ley"/>
+  
+  <owl:Class rdf:about="http://www.semanticweb.org/KG#articulo"/>
+</rdf:RDF>
