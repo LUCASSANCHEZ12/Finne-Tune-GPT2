@@ -66,7 +66,8 @@ def generate_rdf(output_path="output.rdf"):
 
         for _, row in df.iterrows():
             # Create a subject URI for each row in the table
-            subject = KG_NS[f"{table}_{row.iloc[0]}"]
+            subject = KG_NS[f"{table}_{row.iloc[0]}"] if table == "ley" else KG_NS[f"{table}_{row.iloc[0]}_ley_{row.iloc[2]}"]
+
             pk_row = row.iloc[0]
             description = row.iloc[1]
 
