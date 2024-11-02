@@ -144,6 +144,8 @@ def consult_knowledge_graph(question):
     \`\`\`sparql
     [TU CONSULTA SPARQL]
     \`\`\`
+
+    **No utilices caracteres especiales innecesarios en la consulta como: >, < Al inicio de cada linea**
     """
 
     messages = [
@@ -227,10 +229,10 @@ def consult_knowledge_graph(question):
     )
 
     response = stream.choices[0].message.content
-    print("Model Response:\n\n",response)
+    print(f"\n\n-----------------------------------Model Response-----------------------------------\n\n{response}\n\n------------------------------------------------------------------------------------\n\n")
 
     return response
 
 
-question = "Explica el contenido de cada artículo de la ley 50."
+question = "¿Qué detalla el artículo número 12 de la ley 26?"
 consult_knowledge_graph(question)
