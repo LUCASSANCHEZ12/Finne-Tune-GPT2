@@ -89,5 +89,3 @@ def generate_rdf(output_path="output.rdf"):
     # Serialize the knowledge graph to a XML file
     knowledge_graph.serialize(destination=output_path, format="pretty-xml")
     return output_path
-
-generate_rdf()
