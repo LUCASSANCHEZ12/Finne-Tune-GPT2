@@ -80,7 +80,7 @@ def generate_rdf(output_path="output.rdf"):
             knowledge_graph.add((subject, KG_NS[f"{row.index[1]}_{table}"], Literal(description)))
             knowledge_graph.add((subject, KG_NS[f"{row.index[0]}_{table}"], Literal(pk_row)))
             if num_ley:
-                knowledge_graph.add((subject, KG_NS[f"{row.index[2]}_{table}_{num_ley}"], Literal(num_ley)))
+                knowledge_graph.add((subject, KG_NS[f"{row.index[2]}_{table}"], Literal(num_ley)))
 
             # Add foreign key relationships for the "articulo" table
             if table == "articulo":
@@ -89,3 +89,5 @@ def generate_rdf(output_path="output.rdf"):
     # Serialize the knowledge graph to a XML file
     knowledge_graph.serialize(destination=output_path, format="pretty-xml")
     return output_path
+
+generate_rdf()
