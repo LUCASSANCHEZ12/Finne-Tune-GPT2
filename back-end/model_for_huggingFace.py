@@ -70,13 +70,14 @@ def consult_knowledge_graph(question):
     PREFIX kg: <http://www.semanticweb.org/KG#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT ?Descripcion_articulo
+    SELECT ?Descripcion_articulo ?num_ley
     WHERE {
         ?articulo a kg:articulo ;
             kg:Num_Articulo_articulo 5135 ;
             kg:Descripcion_articulo ?Descripcion_articulo ;
             kg:fk_Num_ley ?ley .
-        ?ley kg:Num_Ley_ley 26 .
+        ?ley kg:Num_Ley_ley ?num_ley .
+        FILTER(?num_ley = 26)
     }
     """
 
@@ -97,55 +98,58 @@ def consult_knowledge_graph(question):
     """
     
     prompt = f"""
-    Eres un experto en SPARQL y RDF. Tu tarea es generar consultas SPARQL precisas y correctas basadas en el esquema RDF proporcionado. 
-
-    A continuación tienes el esquema RDF que define los elementos `Ley` y `Artículo`, y sus propiedades y relaciones, con el único vínculo a través de la propiedad `fk_Num_ley`.
+    Eres un experto en SPARQL y RDF. Tu tarea es generar consultas SPARQL correctas basadas en el esquema RDF proporcionado, siguiendo cuidadosamente el formato y las instrucciones.
 
     **Esquema RDF**:
 
     {rdf_schema}
 
-    **Consulta SPARQL válida para preguntas sobre leyes o artículos**:
-
-    Usa estos prefijos en cada consulta:
+    Usa los prefijos:
     PREFIX kg: <http://www.semanticweb.org/KG#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    ### Ejemplos de Preguntas y Respuestas SPARQL
+    ### Ejemplos de Preguntas y Consultas SPARQL
 
     - **Pregunta**: "¿Qué establece la ley número 26?" o "Explica la ley 26."
-    **Consulta SPARQL**:
     \`\`\`sparql
     {example_pregunta_ley}
     \`\`\`
 
-    - **Pregunta**: "¿Qué dice el artículo número 5135 de la ley 26?" o "Explica el artículo 5135 de la ley 26." o "¿Que establece el articulo numero 5135 de la ley 26?
-    **Consulta SPARQL**:
+    - **Pregunta**: "¿Qué dice el artículo número 5135 de la ley 26?" o "Explica el artículo 5135 de la ley 26."
     \`\`\`sparql
     {example_pregunta_articulo}
     \`\`\`
 
-    - **Pregunta**: "Explica la ley 26 con todos sus artículos" o "¿Qué contiene la ley 26?" o "Explica detalladamente la ley 26 con todos sus artículos."
-    **Consulta SPARQL**:
+    - **Pregunta**: "Explica la ley 26 con todos sus artículos."
     \`\`\`sparql
     {example_pregunta_ley_2}
     \`\`\`
 
-    **Instrucciones para la consulta**:
+    **Instrucciones importantes**:
 
-    Genera solo la consulta SPARQL correcta en respuesta a la pregunta del usuario usando las clases y propiedades **exactamente** como en el esquema RDF, con mayúsculas y minúsculas correspondientes.
+    1. **Formato de SELECT y Variables**:
+    - Coloca un espacio después de `SELECT` y antes de las variables, así: `SELECT ?num_ley ?Descripcion_ley`.
+    - Usa un espacio entre cada propiedad y su variable, así: `kg:Num_Articulo_articulo ?num_articulo`.
 
-    **Antes de enviar la consulta, asegúrate de que sea válida y devuelva los resultados esperados. Valida y comprueba, si la consulta es incorrecta, genera una nueva consulta que sea correcta.**
+    2. **Relación entre `articulo` y `ley`**:
+    - Usa `kg:fk_Num_ley` **solo en una dirección**: desde `articulo` hacia `ley`.
+
+    3. **Estructura de las Tripletas**:
+    - Para múltiples propiedades de una misma entidad, usa `;` al final de cada línea.
+    - Termina cada bloque de tripletas con un punto (`.`).
+
+    4. **Definición de Entidades**:
+    - Define cada entidad usando `a kg:articulo` para un artículo y `a kg:ley` para una ley.
 
     Pregunta del usuario: "{question}"
 
-    Entrega la consulta en el formato:
+    **Formato de Entrega**:
+
+    Proporciona solo la consulta en este formato, sin comentarios adicionales:
 
     \`\`\`sparql
     [TU CONSULTA SPARQL]
     \`\`\`
-
-    **No utilices caracteres especiales innecesarios en la consulta como: >, < Al inicio de cada linea**
     """
 
     messages = [
@@ -185,32 +189,25 @@ def consult_knowledge_graph(question):
     results = sparql.query().convert()
 
     prompt = f"""
-    Eres un experto en lenguaje natural y tu tarea es interpretar los resultados de consultas SPARQL y proporcionar respuestas en español que sean claras, concisas y de fácil comprensión para el usuario.
-
-    Dada la siguiente respuesta obtenida de GraphDB en formato JSON:
+    Eres un experto en lenguaje natural. Transforma la siguiente respuesta de GraphDB en JSON:
 
     {results}
 
-    La pregunta original del usuario es la siguiente:
-
-    "{question}"
+    Pregunta del usuario: "{question}"
 
     **Objetivo**:
-    Transforma la información obtenida en una respuesta en lenguaje natural, redactada de manera que responda específicamente a la pregunta del usuario y que sea comprensible para cualquier persona sin conocimientos técnicos.
+    Genera una respuesta en español que sea clara y responda directamente a la pregunta.
 
-    **Requisitos para la respuesta**:
-    - La respuesta debe ser clara, directa y contener únicamente la información relevante a la pregunta.
-    - La redacción debe ser en español correcto, sin incluir detalles técnicos ni términos específicos de RDF o SPARQL.
-    - Evita mencionar que la información proviene de una base de datos; simplemente responde a la pregunta como si estuvieras explicando verbalmente.
+    **Requisitos**:
+    - Usa lenguaje natural sin detalles técnicos.
+    - No menciones que la información proviene de una base de datos.
 
-    Ejemplo de transformación de respuesta:
-    - Si la pregunta del usuario era sobre la descripción de una ley, proporciona una respuesta como "La ley número 26 establece que..." extrayendo la información relevante de los resultados obtenidos.
-    - Si la pregunta del usuario solicitaba varios artículos de una ley, enuméralos y ofrece una descripción para cada uno, en caso de que aplique, por ejemplo: "El articulo <número> de la ley <número> establece que...". Extrae la información necesaria de los resultados obtenidos.
-    - Si la respuesta no contiene información relevante, indica que no se encontraron resultados para la pregunta.
-    - Si la respuesta contiene información incorrecta o incompleta, aclara la situación y proporciona una respuesta adecuada.
-    - Si la respuesta tiene un contenido vacio o nulo, indica que no se encontraron resultados relacionados para la pregunta.
+    Ejemplos:
+    - Para una descripción de ley: "La ley número 26 establece que...".
+    - Para varios artículos: "El artículo <número> de la ley <número> establece que...".
+    - Si no hay resultados, indica que no se encontraron respuestas.
 
-    **Genera únicamente la respuesta en español no en otro idioma** sin explicaciones ni comentarios adicionales.
+    Entrega solo la respuesta en español.
     """
 
     messages = [
@@ -230,5 +227,5 @@ def consult_knowledge_graph(question):
     return response
 
 # Pregunta de prueba
-question = "¿Que establece el articulo numero 12 de la ley 26?"
+question = "Explica la ley 26 con todos sus artículos."
 consult_knowledge_graph(question)
