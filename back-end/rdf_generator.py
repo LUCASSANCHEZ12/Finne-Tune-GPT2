@@ -70,6 +70,7 @@ def generate_rdf(output_path="output.rdf"):
 
             pk_row = row.iloc[0]
             description = row.iloc[1]
+            num_ley = row.iloc[2] if table == "articulo" else None
 
             # Add the subject as an instance of OWL.NamedIndividual and the table class
             knowledge_graph.add((subject, RDF.type, OWL.NamedIndividual))
@@ -78,6 +79,8 @@ def generate_rdf(output_path="output.rdf"):
             # Add properties for the primary key and description
             knowledge_graph.add((subject, KG_NS[f"{row.index[1]}_{table}"], Literal(description)))
             knowledge_graph.add((subject, KG_NS[f"{row.index[0]}_{table}"], Literal(pk_row)))
+            if num_ley:
+                knowledge_graph.add((subject, KG_NS[f"{row.index[2]}_{table}_{num_ley}"], Literal(num_ley)))
 
             # Add foreign key relationships for the "articulo" table
             if table == "articulo":
