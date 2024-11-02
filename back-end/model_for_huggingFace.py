@@ -70,13 +70,13 @@ def consult_knowledge_graph(question):
     PREFIX kg: <http://www.semanticweb.org/KG#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-    SELECT ?Descripcion_articulo ?Num_Ley_ley
+    SELECT ?Descripcion_articulo
     WHERE {
         ?articulo a kg:articulo ;
             kg:Num_Articulo_articulo 5135 ;
             kg:Descripcion_articulo ?Descripcion_articulo ;
             kg:fk_Num_ley ?ley .
-        ?ley kg:Num_Ley_ley ?Num_Ley_ley .
+        ?ley kg:Num_Ley_ley 26 .
     }
     """
 
@@ -113,19 +113,19 @@ def consult_knowledge_graph(question):
 
     ### Ejemplos de Preguntas y Respuestas SPARQL
 
-    - **Pregunta**: "¿Qué establece la ley número 26?"
+    - **Pregunta**: "¿Qué establece la ley número 26?" o "Explica la ley 26."
     **Consulta SPARQL**:
     \`\`\`sparql
     {example_pregunta_ley}
     \`\`\`
 
-    - **Pregunta**: "¿Qué dice el artículo número 5135 de la ley 26?"
+    - **Pregunta**: "¿Qué dice el artículo número 5135 de la ley 26?" o "Explica el artículo 5135 de la ley 26." o "¿Que establece el articulo numero 5135 de la ley 26?
     **Consulta SPARQL**:
     \`\`\`sparql
     {example_pregunta_articulo}
     \`\`\`
 
-    - **Pregunta**: "Explica la ley 26 con todos sus artículos"
+    - **Pregunta**: "Explica la ley 26 con todos sus artículos" o "¿Qué contiene la ley 26?" o "Explica detalladamente la ley 26 con todos sus artículos."
     **Consulta SPARQL**:
     \`\`\`sparql
     {example_pregunta_ley_2}
@@ -191,10 +191,6 @@ def consult_knowledge_graph(question):
 
     {results}
 
-    Y considerando que esta respuesta fue generada a partir de la consulta SPARQL:
-
-    {sparql_query}
-
     La pregunta original del usuario es la siguiente:
 
     "{question}"
@@ -208,8 +204,8 @@ def consult_knowledge_graph(question):
     - Evita mencionar que la información proviene de una base de datos; simplemente responde a la pregunta como si estuvieras explicando verbalmente.
 
     Ejemplo de transformación de respuesta:
-    - Si el resultado muestra la descripción de una ley, proporciona una respuesta como "La ley número 26 establece que..."
-    - Si el resultado incluye varios artículos, enuméralos y ofrece una descripción para cada uno, en caso de que aplique, por ejemplo: "El articulo número de la ley número establece que...".
+    - Si la pregunta del usuario era sobre la descripción de una ley, proporciona una respuesta como "La ley número 26 establece que..." extrayendo la información relevante de los resultados obtenidos.
+    - Si la pregunta del usuario solicitaba varios artículos de una ley, enuméralos y ofrece una descripción para cada uno, en caso de que aplique, por ejemplo: "El articulo <número> de la ley <número> establece que...". Extrae la información necesaria de los resultados obtenidos.
     - Si la respuesta no contiene información relevante, indica que no se encontraron resultados para la pregunta.
     - Si la respuesta contiene información incorrecta o incompleta, aclara la situación y proporciona una respuesta adecuada.
     - Si la respuesta tiene un contenido vacio o nulo, indica que no se encontraron resultados relacionados para la pregunta.
@@ -233,6 +229,6 @@ def consult_knowledge_graph(question):
 
     return response
 
-
-question = "¿Qué detalla el artículo número 12 de la ley 26?"
+# Pregunta de prueba
+question = "¿Que establece el articulo numero 12 de la ley 26?"
 consult_knowledge_graph(question)
