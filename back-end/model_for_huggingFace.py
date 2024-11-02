@@ -95,6 +95,7 @@ def consult_knowledge_graph(question):
         FILTER(?num_ley = 26)
     }
     """
+    
     prompt = f"""
     Eres un experto en SPARQL y RDF. Tu tarea es generar consultas SPARQL precisas y correctas basadas en el esquema RDF proporcionado. 
 
@@ -145,8 +146,6 @@ def consult_knowledge_graph(question):
     \`\`\`
     """
 
-
-
     messages = [
         { "role": "user", "content": prompt }
     ]
@@ -159,7 +158,6 @@ def consult_knowledge_graph(question):
     )
 
     responce = stream.choices[0].message.content
-    #print(f"Model Responce:\n{responce}")
 
     cleaned_response = responce.replace('\\`', '`')
 
@@ -176,6 +174,7 @@ def consult_knowledge_graph(question):
         print(sparql_query)
     else:
         print("No se encontró una consulta SPARQL en la respuesta.")
+        return
         
         
     sparql.setQuery(sparql_query)
@@ -184,28 +183,36 @@ def consult_knowledge_graph(question):
     results = sparql.query().convert()
 
     prompt = f"""
-    Eres un experto en lenguaje natural y tu tarea es interpretar los resultados de consultas SPARQL y proporcionar respuestas verbalizadas en español.
+    Eres un experto en lenguaje natural y tu tarea es interpretar los resultados de consultas SPARQL y proporcionar respuestas en español que sean claras, concisas y de fácil comprensión para el usuario.
 
-    Dada la siguiente respuesta de GraphDB:
+    Dada la siguiente respuesta obtenida de GraphDB en formato JSON:
 
     {results}
 
-    Y considerando la consulta SPARQL utilizada:
+    Y considerando que esta respuesta fue generada a partir de la consulta SPARQL:
 
     {sparql_query}
 
-    Genera una respuesta en lenguaje natural que comunique claramente la información obtenida, respondiendo a la pregunta original:
+    La pregunta original del usuario es la siguiente:
 
     "{question}"
 
-    La respuesta debe:
+    **Objetivo**:
+    Transforma la información obtenida en una respuesta en lenguaje natural, redactada de manera que responda específicamente a la pregunta del usuario y que sea comprensible para cualquier persona sin conocimientos técnicos.
 
-    - Ser clara y concisa.
-    - Incluir los datos relevantes obtenidos de la consulta.
-    - Estar redactada en español correcto.
-    - No incluir información técnica ni detalles de la consulta.
+    **Requisitos para la respuesta**:
+    - La respuesta debe ser clara, directa y contener únicamente la información relevante a la pregunta.
+    - La redacción debe ser en español correcto, sin incluir detalles técnicos ni términos específicos de RDF o SPARQL.
+    - Evita mencionar que la información proviene de una base de datos; simplemente responde a la pregunta como si estuvieras explicando verbalmente.
 
-    No incluyas explicaciones adicionales ni comentarios técnicos; proporciona **únicamente** la respuesta verbalizada al usuario.
+    Ejemplo de transformación de respuesta:
+    - Si el resultado muestra la descripción de una ley, proporciona una respuesta como "La ley número 26 establece que..."
+    - Si el resultado incluye varios artículos, enuméralos y ofrece una descripción para cada uno, en caso de que aplique, por ejemplo: "El articulo número de la ley número establece que...".
+    - Si la respuesta no contiene información relevante, indica que no se encontraron resultados para la pregunta.
+    - Si la respuesta contiene información incorrecta o incompleta, aclara la situación y proporciona una respuesta adecuada.
+    - Si la respuesta tiene un contenido vacio o nulo, indica que no se encontraron resultados relacionados para la pregunta.
+
+    **Genera únicamente la respuesta en español no en otro idioma** sin explicaciones ni comentarios adicionales.
     """
 
     messages = [
@@ -220,10 +227,10 @@ def consult_knowledge_graph(question):
     )
 
     response = stream.choices[0].message.content
-    print("Model Response: ",response)
+    print("Model Response:\n\n",response)
 
     return response
 
 
-question = "¿Cuáles son los artículos incluidos en la ley número 40 y qué establecen?"
+question = "Explica el contenido de cada artículo de la ley 50."
 consult_knowledge_graph(question)
