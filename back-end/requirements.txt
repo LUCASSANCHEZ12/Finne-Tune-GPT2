@@ -5,3 +5,6 @@ mysql-connector-python
 rdb2rdf
 python-dotenv
 pandas
+huggingface-hub
+python-dotenv
+SPARQLWrapper

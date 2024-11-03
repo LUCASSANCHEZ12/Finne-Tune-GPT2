@@ -3,12 +3,17 @@ import os
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 
+# Load environment variables from a .env file
 load_dotenv()
+
 def make_decision(user_prompt):
+    # Retrieve the Hugging Face API token from environment variables
     token_hf = os.getenv("TOKEN_HF")
 
+    # Initialize the InferenceClient with the API token
     client = InferenceClient(api_key=token_hf)
 
+    # Construct the prompt for the model
     prompt = f"""
     Eres un asistente que clasifica preguntas legales como **"Específica"** o **"Inferencial"**.
 
@@ -18,10 +23,10 @@ def make_decision(user_prompt):
 
     **Ejemplos de Preguntas Específicas**:
     - "¿Qué establece la ley número 26?"
-    - "Explica la ley 26."
+    - "Explica la ley 26"
     - "¿Qué dice el artículo número 5135 de la ley 26?"
-    - "Explica el artículo 5135 de la ley 26."
-    - "Explica la ley 26 con todos sus artículos."
+    - "Explica el artículo 5135 de la ley 26"
+    - "Explica la ley 26 con todos sus artículos"
 
     - **Pregunta Inferencial**: Pregunta sobre un tema, escenario legal o articulo en cierta area. Requiere inferir qué leyes,articulos o derechos aplican.
 
@@ -42,10 +47,12 @@ def make_decision(user_prompt):
     "{user_prompt}"
     """
     
+    # Create the message payload for the model
     messages = [
         { "role": "user", "content": prompt }
     ]
 
+    # Send the prompt to the model and get the response
     stream = client.chat.completions.create(
         model="meta-llama/Llama-3.2-3B-Instruct", 
         messages=messages, 
@@ -53,7 +60,9 @@ def make_decision(user_prompt):
         stream=False
     )
     
-    responce = stream.choices[0].message.content
-    return responce
+    # Extract the response content
+    response = stream.choices[0].message.content
+    return response
 
-make_decision("¿Cuál es la responsabilidad del Estado respecto a la educación según el artículo 77?")
+# Unit Test
+#make_decision("¿Cuál es la responsabilidad del Estado respecto a la educación según el artículo 77?")

@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from rdf_generator import generate_rdf
+from fastapi.responses import JSONResponse
+#from rdf_generator import generate_rdf
 from decision_model import make_decision
+from model_for_huggingFace import consult_knowledge_graph
 from pydantic import BaseModel
+import uvicorn
+import re
 
 app = FastAPI()
 
@@ -23,21 +27,32 @@ class Prompt(BaseModel):
 
 @app.get("/")
 def create_rdf():
-    generate_rdf()
+    #generate_rdf()
     return None
 
 @app.post("/prompt")
 def process_prompt(user_prompt : Prompt):
     prompt_type = make_decision(user_prompt.prompt)
+    pattern = r"Específica\.?"
+    matches = re.search(pattern, prompt_type, re.DOTALL)
     
-    if(prompt_type == "Específica"):
+    print(prompt_type)
+    if(matches):
         #Sent prompt to ask KG
-        return "Especifica"
-    elif(prompt_type == "Inferencial"):
-        #sent prompt to the fine tuned model
-        return "Inferencial"
+        try:
+            response = consult_knowledge_graph(user_prompt.prompt)
+            return JSONResponse(content={"response" : response})
+        except Exception as e:
+            print(f"ValueError: {e}")
+            return JSONResponse(content={"error" : str(e)}) #Sent an error message
     else:
-        #sent prompt to the fine tuned model
-        return "No se sabe"
-    
-    
+        #sent prompt to the fine tuned model in both cases
+        try:
+            #Try to recive a response for the LLM model
+            return JSONResponse(content={})
+        except Exception as e:
+            print(f"ValueError: {str(e)}")
+            return JSONResponse(content={"error" : str(e)}) #Sent an error message
+        
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
