@@ -100,7 +100,7 @@ def train(train_file_path,
     lora_config = LoraConfig(
         r=8,
         lora_alpha=16,
-        target_modules=["q_proj", "v_proj"], # Target query and value projection layers
+        target_modules=["q_proj", "k_proj" ,"v_proj", "o_proj" , "gate_proj" , "up_proj" , "down_proj"], # Target query and value projection layers
         lora_dropout=0.1,
         bias="none",
         task_type="CAUSAL_LM"
@@ -153,13 +153,13 @@ def train(train_file_path,
 
 # Define parameters and file paths for training
 model_name = "meta-llama/Llama-3.2-3B-Instruct"
-train_file_path = "question_answers_train.txt"
-validation_file_path = "question_answers_validation.txt"
-output_dir = 'custom_q_and_a/'
+train_file_path = "question_answers_train1.txt"
+validation_file_path = "question_answers_validation1.txt"
+output_dir = 'custom_q_and_a_2/'
 overwrite_output_dir = True
 # Hyperparameters for training
 per_device_train_batch_size = 5
-num_train_epochs = 1
+num_train_epochs = 50
 lr = 5e-5
 
 # Begin training process
