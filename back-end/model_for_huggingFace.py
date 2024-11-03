@@ -4,16 +4,21 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from dotenv import load_dotenv
 import os
 
+# Load environment variables from a .env file
 load_dotenv()
+
 def consult_knowledge_graph(question):
+    # Retrieve environment variables
     graphdb_url = os.getenv("GRAPHDB_URL")
     token_hf = os.getenv("TOKEN_HF")
 
+    # Initialize SPARQLWrapper with the GraphDB URL
     sparql = SPARQLWrapper(graphdb_url)
+    # Initialize HuggingFace InferenceClient with the API token
     client = InferenceClient(api_key=token_hf)
 
+    # RDF schema definition
     rdf_schema = """
-    
     Propiedades de objeto:
     
         <owl:ObjectProperty rdf:about="http://www.semanticweb.org/KG#fk_Num_ley">
@@ -55,6 +60,7 @@ def consult_knowledge_graph(question):
     <owl:Class rdf:about="http://www.semanticweb.org/KG#articulo"/>
     """
 
+    # Example SPARQL queries
     example_pregunta_ley = """
     PREFIX kg: <http://www.semanticweb.org/KG#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -97,6 +103,7 @@ def consult_knowledge_graph(question):
     }
     """
     
+    # Prompt for generating SPARQL query based on user question
     prompt = f"""
     Eres un experto en SPARQL y RDF. Tu tarea es generar consultas SPARQL correctas basadas en el esquema RDF proporcionado, siguiendo cuidadosamente el formato y las instrucciones.
 
@@ -152,10 +159,12 @@ def consult_knowledge_graph(question):
     \`\`\`
     """
 
+    # Prepare the message for the HuggingFace model
     messages = [
         { "role": "user", "content": prompt }
     ]
 
+    # Generate the SPARQL query using the HuggingFace model
     stream = client.chat.completions.create(
         model="meta-llama/Llama-3.2-3B-Instruct", 
         messages=messages, 
@@ -163,31 +172,30 @@ def consult_knowledge_graph(question):
         stream=False
     )
 
+    # Extract the SPARQL query from the model's response
     responce = stream.choices[0].message.content
-
     cleaned_response = responce.replace('\\`', '`')
-
-    # Opcional: Imprimir la respuesta limpiada
-    #print("Respuesta después de limpiar los backticks:")
-    #print(cleaned_response)
-
     pattern = r"```(?:sparql)?\n(.*?)\n```"
     match = re.search(pattern, cleaned_response, re.DOTALL)
 
     if match:
         sparql_query = match.group(1)
-        print("\nConsulta SPARQL extraída:")
-        print(sparql_query)
     else:
-        print("No se encontró una consulta SPARQL en la respuesta.")
-        return
+        raise Exception("No se encontró una consulta SPARQL en la respuesta.")
+    
+    print(sparql_query)
         
+    try:    
+        sparql.setQuery(sparql_query)
+        sparql.setReturnFormat(JSON)
         
-    sparql.setQuery(sparql_query)
-    sparql.setReturnFormat(JSON)
+        # Execute the SPARQL query and get the results
+        results = sparql.query().convert()
+        print(results)
+    except Exception as e:
+        raise Exception("Error con el sparql.")
 
-    results = sparql.query().convert()
-
+    # Prompt for generating a natural language response based on the SPARQL results
     prompt = f"""
     Eres un experto en lenguaje natural. Transforma la siguiente respuesta de GraphDB en JSON:
 
@@ -210,22 +218,28 @@ def consult_knowledge_graph(question):
     Entrega solo la respuesta en español.
     """
 
+    # Prepare the message for the HuggingFace model
     messages = [
         { "role": "user", "content": prompt }
     ]
 
-    stream = client.chat.completions.create(
-        model="meta-llama/Llama-3.2-3B-Instruct", 
-        messages=messages, 
-        max_tokens=500,
-        stream=False
-    )
+    try:
+        # Generate the natural language response using the HuggingFace model
+        stream = client.chat.completions.create(
+            model="meta-llama/Llama-3.2-3B-Instruct", 
+            messages=messages, 
+            max_tokens=500,
+            stream=False
+        )
+    except Exception as e:
+        raise Exception("Consulta demasiado larga.")
 
+    # Extract the natural language response from the model's response
     response = stream.choices[0].message.content
     print(f"\n\n-----------------------------------Model Response-----------------------------------\n\n{response}\n\n------------------------------------------------------------------------------------\n\n")
 
     return response
 
-# Pregunta de prueba
+# Unit Test
 question = "Explica la ley 26 con todos sus artículos."
-consult_knowledge_graph(question)
+#consult_knowledge_graph(question)
