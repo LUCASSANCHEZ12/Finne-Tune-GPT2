@@ -42,8 +42,7 @@ def process_prompt(user_prompt : Prompt):
     prompt_type = make_decision(user_prompt.prompt)
     pattern = r"Específica\.?"
     matches = re.search(pattern, prompt_type, re.DOTALL)
-    
-    print(prompt_type)
+
     if(matches):
         #Sent prompt to ask KG
         try:
