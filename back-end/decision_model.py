@@ -19,7 +19,7 @@ def make_decision(user_prompt):
 
     **Definiciones**:
 
-    - **Pregunta Específica**: Pregunta directamente sobre una ley o artículo en particular por número sin mencionar sobre que area. Hace referencia explícita a documentos legales o artículos específicos.
+    - **Pregunta Específica**: Pregunta directamente sobre una ley o artículo en particular y sin preguntas simples y sencillas. Hace referencia explícita a documentos legales o artículos específicos.
 
     **Ejemplos de Preguntas Específicas**:
     - "¿Qué establece la ley número 26?"
@@ -28,14 +28,17 @@ def make_decision(user_prompt):
     - "Explica el artículo 5135 de la ley 26"
     - "Explica la ley 26 con todos sus artículos"
 
-    - **Pregunta Inferencial**: Pregunta sobre un tema, escenario legal o articulo en cierta area. Requiere inferir qué leyes,articulos o derechos aplican.
+    - **Pregunta Inferencial**: Pregunta sobre un tema, escenario legal y son preguntas mas complejas. Requiere inferir qué leyes,articulos o derechos aplican.
 
     **Ejemplos de Preguntas Inferenciales**:
     - "¿Que ley me sanciona en caso de asesinato?"
     - "¿Qué ley me protege en caso de asesinato?"
     - "¿Qué penalización sufro en caso de asesinato?"
-    - ¿Qué derechos se garantizan en el artículo 23 sobre la libertad y seguridad personal?
-    - ¿Qué establece el artículo 33 sobre el derecho al medio ambiente?
+    - "¿Qué derechos se garantizan en el artículo 23 sobre la libertad y seguridad personal?"
+    - "¿Qué establece el artículo 33 sobre el derecho al medio ambiente?"
+    - "¿Qué artículo agrava las penas si se cometen actos con circunstancias como alevosía o ensañamiento?"
+    - "¿Qué artículo establece una mayor sanción si la víctima de homicidio es un niño, niña o adolescente?"
+    - "¿Qué tipo de acciones nacen de la comisión de un delito según el artículo 14?"
 
     **Instrucciones**:
 
