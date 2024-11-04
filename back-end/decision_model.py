@@ -31,6 +31,7 @@ def make_decision(user_prompt):
     - **Pregunta Inferencial**: Pregunta sobre un tema, escenario legal o articulo en cierta area. Requiere inferir qué leyes,articulos o derechos aplican.
 
     **Ejemplos de Preguntas Inferenciales**:
+    - "¿Que ley me sanciona en caso de asesinato?"
     - "¿Qué ley me protege en caso de asesinato?"
     - "¿Qué penalización sufro en caso de asesinato?"
     - ¿Qué derechos se garantizan en el artículo 23 sobre la libertad y seguridad personal?
