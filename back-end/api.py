@@ -55,7 +55,7 @@ def process_prompt(user_prompt : Prompt):
         #sent prompt to the fine tuned model in both cases
         try:
             response = ModelResponse(user_prompt.prompt)
-            return JSONResponse(content={"response" : "Hola","error" : ""})
+            return JSONResponse(content={"response" : response,"error" : ""})
         except Exception as e:
             print(f"ValueError: {str(e)}")
             return JSONResponse(content={"response" : "","error" : str(e)}) #Sent an error message
