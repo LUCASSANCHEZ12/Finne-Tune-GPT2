@@ -1,20 +1,35 @@
 const API = {
   GetChatbotResponse: async message => {
-    return new Promise(function(resolve, reject) {
-      console.log("Sending message to chatbot model: ", message);
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ "prompt": message })
-    };
-    fetch('http://localhost:800/prompt', requestOptions)
-        .then(response => response.json())
-        .then(data => this.setState({ postId: data.id }));
-      setTimeout(function() {
-        if (message === "hi") resolve("Welcome to chatbot!");
-        else resolve("echo : " + message);
-      }, 2000);
-    });
+    try {
+      if (message === "hi"){
+        return "Bienvenido. ¿En que puedo ayudarte?"
+      }
+      const response = await fetch("http://localhost:8000/prompt", {
+        method: "POST",
+        body: JSON.stringify({
+          prompt: message
+        }),
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const body_response = await response.json();
+
+      if(body_response.response !== ""){
+        return body_response.response
+      }else{
+        return body_response.error
+      }
+
+    } catch (error) {
+      console.error("Error fetching chatbot response:", error);
+      throw error; // opcional, si quieres manejar el error donde se llame a la función
+    }
   }
 };
 
