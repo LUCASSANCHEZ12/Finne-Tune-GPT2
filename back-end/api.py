@@ -7,6 +7,13 @@ from model_for_huggingFace import consult_knowledge_graph
 from pydantic import BaseModel
 import uvicorn
 import re
+import sys
+import os
+
+ruta_model = os.path.join(os.path.dirname(__file__), './../Model')
+sys.path.append(ruta_model)
+
+from model_answer import ModelResponse
 
 app = FastAPI()
 
@@ -48,8 +55,8 @@ def process_prompt(user_prompt : Prompt):
     else:
         #sent prompt to the fine tuned model in both cases
         try:
-            #Try to recive a response for the LLM model
-            return JSONResponse(content={})
+            response = ModelResponse(user_prompt.prompt)
+            return JSONResponse(content={"response" : response})
         except Exception as e:
             print(f"ValueError: {str(e)}")
             return JSONResponse(content={"error" : str(e)}) #Sent an error message
