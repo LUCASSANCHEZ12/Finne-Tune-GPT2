@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-#from rdf_generator import generate_rdf
+from rdf_generator import generate_rdf
 from decision_model import make_decision
 from model_for_huggingFace import consult_knowledge_graph
 from pydantic import BaseModel
@@ -18,7 +18,7 @@ from model_answer import ModelResponse
 app = FastAPI()
 
 origins = [
-    'http://localhost'
+    '*'
 ]
 
 app.add_middleware(
@@ -34,7 +34,7 @@ class Prompt(BaseModel):
 
 @app.get("/")
 def create_rdf():
-    #generate_rdf()
+    generate_rdf()
     return None
 
 @app.post("/prompt")
@@ -47,18 +47,18 @@ def process_prompt(user_prompt : Prompt):
         #Sent prompt to ask KG
         try:
             response = consult_knowledge_graph(user_prompt.prompt)
-            return JSONResponse(content={"response" : response})
+            return JSONResponse(content={"response" : response,"error" : ""})
         except Exception as e:
             print(f"ValueError: {e}")
-            return JSONResponse(content={"error" : str(e)}) #Sent an error message
+            return JSONResponse(content={"response" : "","error" : str(e)}) #Sent an error message
     else:
         #sent prompt to the fine tuned model in both cases
         try:
             response = ModelResponse(user_prompt.prompt)
-            return JSONResponse(content={"response" : response})
+            return JSONResponse(content={"response" : "Hola","error" : ""})
         except Exception as e:
             print(f"ValueError: {str(e)}")
-            return JSONResponse(content={"error" : str(e)}) #Sent an error message
+            return JSONResponse(content={"response" : "","error" : str(e)}) #Sent an error message
         
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
