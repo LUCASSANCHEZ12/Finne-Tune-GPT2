@@ -46,7 +46,7 @@ To run the project locally, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone [https://github.com/LUCASSANCHEZ12/Sentiment_Analyzer.git](https://github.com/LUCASSANCHEZ12/Finne-Tune-GPT2.git)
+    git clone https://github.com/LUCASSANCHEZ12/Finne-Tune-GPT2.git
     ```
 
 2. Install all Python dependencies
