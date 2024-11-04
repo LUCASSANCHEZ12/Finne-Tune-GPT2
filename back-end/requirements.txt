@@ -8,3 +8,12 @@ pandas
 huggingface-hub
 python-dotenv
 SPARQLWrapper
+transformers
+torch
+datasets
+math
+pandas
+evaluate
+peft
+scikit-learn
+numpy
